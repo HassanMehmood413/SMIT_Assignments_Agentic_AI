@@ -16,7 +16,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 ALGORITHM = os.getenv('ALGORITHM')
-ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv('ACCESS_TOKEN_EXPIRE_MINUTES')
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv('ACCESS_TOKEN_EXPIRE_MINUTES'))
 
 
 
@@ -40,17 +40,24 @@ def verify_token(token:str,credential_exception:HTTPException):
     
     except:
         raise credential_exception
+
+
+
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(database.get_db)):
     
-def get_current_user(token:str = Depends(oauth2_scheme),db:Session = Depends(database.get_db)):
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail='Could not Validate credentials',
-        headers={'WWW-Authenticate':"Bearer"}
+        headers={'WWW-Authenticate': "Bearer"}
     )
 
-    token_data = verify_token(token,credential_exception)
+    token_data = verify_token(token, credential_exception)
+
+    print(token_data)
 
     user = db.query(models.User).filter(models.User.id == token_data.id).first()
+
+    print("✅ Authenticated User in get_current_user:", user)  # Debugging Output
 
     if user is None:
         raise credential_exception

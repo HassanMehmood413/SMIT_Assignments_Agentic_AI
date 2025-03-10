@@ -1,10 +1,11 @@
 from pydantic import BaseModel, Field,EmailStr
-from typing import Optional
+from typing import Optional, List
 
 class PostOut(BaseModel):
     id: int
     author: str
     title: str = Field(...,max_length=50,min_length=10)
+
 
     class config:
         orm_mode = True
@@ -34,6 +35,11 @@ class UserCreate(BaseModel):
 class UserOut(BaseModel):
     id: int
     email: str
+    posts : List[PostOut]
+
+
+    class Config:
+        orm_mode = True
 
 
 #----------------------
@@ -52,3 +58,12 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     id: Optional[int] = None
+
+
+
+#----------------------
+# Votes Schemas
+#----------------------
+class Votes(BaseModel):
+    direction:int =  Field(...,le=1,ge=0)
+    post_id: int

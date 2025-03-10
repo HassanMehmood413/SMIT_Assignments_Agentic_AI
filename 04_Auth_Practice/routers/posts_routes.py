@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 from repository import post_repo
 from database import get_db
+from utils.oauth2 import get_current_user
 import models,schemas
 
 
@@ -19,8 +20,8 @@ def all_posts(db: Session = Depends(get_db)):
 
 
 @router.post('/create',response_model=schemas.PostOut)
-def createpost(post: schemas.PostCreate,db:Session = Depends(get_db)):
-    return post_repo.create_post(post,db)
+def createpost(post: schemas.PostCreate,db:Session = Depends(get_db),current_user: models.User = Depends(get_current_user)):
+    return post_repo.create_post(post,db,current_user)
     
 
 

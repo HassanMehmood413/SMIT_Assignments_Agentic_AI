@@ -16,13 +16,13 @@ def login(request : OAuth2PasswordRequestForm = Depends(),db:Session = Depends(d
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            details="Invalid Crendentials",
+            detail="Invalid Crendentials",
         )
     
     if not verify_password(request.password,user.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            details="Invalid Crendentials",
+            detail="Invalid Crendentials",
         )
     
     access_token = oauth2.create_access_token(data={'sub': str(user.id)})
