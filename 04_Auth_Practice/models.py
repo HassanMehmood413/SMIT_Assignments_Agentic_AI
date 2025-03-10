@@ -30,8 +30,19 @@ class User(Base):
 
     posts = relationship('Posts', back_populates='owner', cascade="all, delete")  # ✅ Fix relationship
 
+
+
 class Votes(Base):
     __tablename__ = 'votes'
 
     post_id = Column(Integer,ForeignKey('posts.id',ondelete='CASCADe'),primary_key=True)
     user_id = Column(Integer,ForeignKey('users.id',ondelete='CASCADE'),primary_key=True)
+
+
+class Messages(Base):
+    __tablename__ = 'messaeges'
+
+
+    post_id = Column(Integer,ForeignKey('posts.id',ondelete='CASCADe'),primary_key=True)
+    user_id = Column(Integer,ForeignKey('users.id',ondelete='CASCADE'),primary_key=True)
+    message = Column(Text,nullable=False)

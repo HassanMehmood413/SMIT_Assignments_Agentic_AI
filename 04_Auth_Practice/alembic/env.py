@@ -6,6 +6,7 @@ from sqlalchemy import pool
 from models import Posts, User  # Make sure your models are imported
 
 
+import os
 from alembic import context
 
 # this is the Alembic Config object, which provides
@@ -22,6 +23,9 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
+
+
+config.set_main_option("sqlalchemy.url", os.getenv("DB_URL"))
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

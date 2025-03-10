@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field,EmailStr
+from pydantic import BaseModel, Field,EmailStr,validator
 from typing import Optional, List
+import re
 
 class PostOut(BaseModel):
     id: int
@@ -29,7 +30,19 @@ class PostCreate(BaseModel):
 
 class UserCreate(BaseModel):
     email: str
-    password: str
+    password: str = Field(
+        ...,
+        
+        description="Password must be at least 8 characters long and include at least one letter and one number."
+    )
+
+    @validator('password')
+    def password_complexity(cls, v):
+        # Use Python's re module with look-ahead assertions.
+        pattern = re.compile(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$')
+        if not pattern.match(v):
+            raise ValueError("Password must be at least 8 characters long and include at least one letter and one number.")
+        return v
 
 
 class UserOut(BaseModel):
@@ -67,3 +80,14 @@ class TokenData(BaseModel):
 class Votes(BaseModel):
     direction:int =  Field(...,le=1,ge=0)
     post_id: int
+
+
+
+#----------------------
+# Messages Schemas
+#----------------------
+
+class Messages(BaseModel):
+    direction:int =  Field(...,le=1,ge=0)
+    post_id: int
+    message: str
